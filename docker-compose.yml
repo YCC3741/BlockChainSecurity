@@ -1,0 +1,20 @@
+services:
+  lab:
+    build: .
+    container_name: defihacklabs
+    volumes:
+      - .:/app
+    
+    # --- 修改這裡 ---
+    # env_file:      <-- 刪除或註解掉這行
+    #   - .env       <-- 刪除或註解掉這行
+    # ----------------
+    
+    networks:
+      - hacknet
+    restart: unless-stopped
+    command: tail -f /dev/null
+
+networks:
+  hacknet:
+    driver: bridge
